@@ -30,3 +30,4 @@ Just a simple OS implementation in C. For educational purposes only.
 - [] stdlib
 
 ## Screenshot:
+![image](https://github.com/assada/os/assets/1472664/9b67c053-36e1-4816-ad7f-093b89b03fce)
