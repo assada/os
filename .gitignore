@@ -1,0 +1,8 @@
+*.o
+*.bin
+*.elf
+*.img
+isodir/
+.vscode/
+.idea/
+*.iso
