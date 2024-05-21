@@ -80,7 +80,7 @@ void shell_echo_command(char *input)
 void shell_parse_input(char *input)
 {
     char *command = strtok(input, " \n");
-    char *first_param = strtok(NULL, " \n");
+    char *args = input + strlen(command) + 1;
 
     if (command == NULL || *command == '\0')
     {
@@ -93,7 +93,7 @@ void shell_parse_input(char *input)
     }
     else if (strcmp(command, "echo") == 0)
     {
-        shell_echo_command(first_param);
+        shell_echo_command(args);
     }
     else if (strcmp(command, "exit") == 0)
     {

@@ -1,8 +1,10 @@
 #include "user_space.h"
+#include "gdt.h"
 
 void enter_user_space(void)
 {
-    asm volatile(" cli;              \
+    set_kernel_stack(0x110); // 128KB ?? WHY? ??
+    asm volatile("cli;              \
                   mov $0x23, %ax;   \
                   mov %ax, %ds;     \
                   mov %ax, %es;     \

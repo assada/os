@@ -18,7 +18,6 @@ void kernel_main(void)
     gdt_install();
 
     idt_install();
-
     isr_install();
     irq_install();
 
@@ -26,20 +25,18 @@ void kernel_main(void)
 
     keyboard_install();
 
-    sys_enable_interrupts();
-
-    terminal_printc("Hello, &ekernel &7World!\n&5Magenta String Example\nThis is a &4red string&7.\n");
+    terminal_printc("Welcome to &cDeadOS&7.\n");
     for (int i = 0; i < 3; i++)
     {
         terminal_printc("&cDead &7");
         terminal_putchar('0' + (i / 10));
         terminal_putchar('0' + (i % 10));
         terminal_printc("\n");
-        delay(500);
+        delay(100);
     }
-    // syscall_init();
+    syscall_init();
 
-    // enter_user_space();
+    enter_user_space();
 
     shell_init();
 }

@@ -15,6 +15,27 @@ void pit_handler()
     outb(0x20, 0x20);
 }
 
+void pic_remap(int offset1, int offset2)
+{
+    unsigned char a1, a2;
+
+    a1 = inb(0x21);
+    a2 = inb(0xA1);
+
+    outb(0x20, 0x11);
+    outb(0xA0, 0x11);
+    outb(0x21, offset1);
+    outb(0xA1, offset2);
+    outb(0x21, 0x04);
+    outb(0xA1, 0x02);
+
+    outb(0x21, 0x01);
+    outb(0xA1, 0x01);
+
+    outb(0x21, a1);
+    outb(0xA1, a2);
+}
+
 void delay(uint32_t milliseconds)
 {
     uint32_t end = tick + milliseconds;
