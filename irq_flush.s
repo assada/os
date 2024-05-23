@@ -30,7 +30,6 @@ IRQ 15, 47
 
 irq_common_stub:
    pusha
-
    push %ds
    push %es
    push %fs

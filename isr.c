@@ -139,23 +139,20 @@ static const char *exception_messages[] =
 
 void fault_handler(Stack *registers)
 {
+    // check this
     if (registers->id == 128)
+    {
         isr_call_handler(registers);
+    }
 
     if (registers->id < 32)
     {
-        terminal_printc("Exception. System Halted!\n");
-
-        const char *message = exception_messages[registers->id];
-        while (*message)
-        {
-            terminal_putchar(*message);
-            message++;
-        }
 
         isr_call_handler(registers);
 
         for (;;)
+        {
             sys_halt();
+        }
     }
 }

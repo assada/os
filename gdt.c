@@ -4,14 +4,14 @@
 #define GDT_ENTRY 6
 
 Gdt_entry gdt[GDT_ENTRY];
-Gdt_ptr gdtp;
+Gdt_ptr gdt_ptr;
 
-extern void gdt_flush(uint32_t);
+extern void gdt_flush(void);
 
 Tss_entry tss;
 extern void tss_flush(void);
 
-static void gdt_set_gate(uint8_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity)
+void gdt_set_gate(uint8_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity)
 {
     gdt[num].base_low = base & 0xFFFF;
     gdt[num].base_middle = (base >> 16) & 0xFF;
@@ -25,45 +25,37 @@ static void gdt_set_gate(uint8_t num, uint32_t base, uint32_t limit, uint8_t acc
     gdt[num].access = access;
 }
 
-static void tss_install(uint8_t num, uint16_t kernel_ss, uint16_t kernel_esp)
+void tss_set_gate(uint32_t num, uint16_t ss0, uint32_t esp0)
 {
     uint32_t base = (uint32_t)&tss;
     uint32_t limit = base + sizeof(Tss_entry);
-
     gdt_set_gate(num, base, limit, 0xE9, 0x0);
+    memset(&tss, 0x0, sizeof(Tss_entry));
+    tss.ss0 = ss0;
+    tss.esp0 = esp0;
 
-    memset(&tss, 0, sizeof(Tss_entry));
-
-    tss.ss0 = kernel_ss;
-    tss.esp0 = kernel_esp;
-
-    tss.cs = 0x0B;
-    tss.ss = 0x13;
-    tss.es = 0x13;
-    tss.ds = 0x13;
-    tss.fs = 0x13;
-    tss.gs = 0x13;
-}
-
-void set_kernel_stack(uint32_t stack)
-{
-    tss.esp0 = stack;
+    tss.cs = 0x1B;
+    tss.ss = 0x23;
+    tss.es = 0x23;
+    tss.ds = 0x23;
+    tss.fs = 0x23;
+    tss.gs = 0x23;
 }
 
 void gdt_install()
 {
 
     gdt_set_gate(0, 0x0, 0x0, 0x0, 0x0);          // Null segment
-    gdt_set_gate(1, 0x0, 0xFFFFFFFF, 0x9A, 0xCF); // Kernel code segment
-    gdt_set_gate(2, 0x0, 0xFFFFFFFF, 0x92, 0xCF); // Data segment
-    gdt_set_gate(3, 0x0, 0xFFFFFFFF, 0xFA, 0xCF); // User code segment
-    gdt_set_gate(4, 0x0, 0xFFFFFFFF, 0xF2, 0xCF); // User data segment
+    gdt_set_gate(1, 0x0, 0xFFFFFFFF, 0x9A, 0xC0); // 0x08 Kernel code segment
+    gdt_set_gate(2, 0x0, 0xFFFFFFFF, 0x92, 0xC0); // 0x10 Kernel data segment
+    gdt_set_gate(3, 0x0, 0xFFFFFFFF, 0xFA, 0xC0); // 0x18 User code segment
+    gdt_set_gate(4, 0x0, 0xFFFFFFFF, 0xF2, 0xC0); // 0x20 User data segment
 
-    tss_install(5, 0x10, 0x0);
+    tss_set_gate(5, 0x10, 0);
 
-    gdtp.limit = (sizeof(Gdt_entry) * GDT_ENTRY) - 1;
-    gdtp.base = (uint32_t)&gdt;
+    gdt_ptr.limit = (sizeof(Gdt_entry) * GDT_ENTRY) - 1;
+    gdt_ptr.base = (uint32_t)&gdt;
 
-    gdt_flush((uint32_t)&gdtp);
+    gdt_flush();
     tss_flush();
 }

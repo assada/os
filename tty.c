@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdarg.h>
 #include "string.h"
 
 static const size_t VGA_WIDTH = 80;
@@ -138,6 +139,7 @@ void terminal_writestring(const char *data)
     terminal_write(data, strlen(data));
 }
 
+// Існуюча функція для виводу одного рядка
 void terminal_printc(const char *data)
 {
     while (*data)
@@ -154,6 +156,86 @@ void terminal_printc(const char *data)
             data++;
         }
     }
+}
+
+void itoa(int value, char *str, int base)
+{
+    char *rc;
+    char *ptr;
+    char *low;
+
+    if (value < 0 && base == 10)
+    {
+        *str++ = '-';
+        value = -value;
+    }
+
+    rc = ptr = str;
+    do
+    {
+        *ptr++ = "0123456789abcdef"[value % base];
+        value /= base;
+    } while (value);
+
+    *ptr-- = '\0';
+
+    for (low = rc; low < ptr; low++, ptr--)
+    {
+        char tmp = *low;
+        *low = *ptr;
+        *ptr = tmp;
+    }
+}
+
+void terminal_printf_int(int value)
+{
+    char buffer[12];
+    itoa(value, buffer, 10);
+    terminal_printf(buffer);
+}
+
+void terminal_printf_hex(unsigned int value)
+{
+    char buffer[12];
+    itoa(value, buffer, 16);
+    terminal_printf(buffer);
+}
+
+void terminal_printf(const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+
+    const char *p = format;
+    while (*p)
+    {
+        if (*p == '%' && (*(p + 1) == 's' || *(p + 1) == 'd' || *(p + 1) == 'x'))
+        {
+            p++;
+            if (*p == 's')
+            {
+                const char *str = va_arg(args, const char *);
+                terminal_printc(str);
+            }
+            else if (*p == 'd')
+            {
+                int value = va_arg(args, int);
+                terminal_printf_int(value);
+            }
+            else if (*p == 'x')
+            {
+                unsigned int value = va_arg(args, unsigned int);
+                terminal_printf_hex(value);
+            }
+        }
+        else
+        {
+            terminal_putchar(*p);
+        }
+        p++;
+    }
+
+    va_end(args);
 }
 
 void terminal_update_cursor(void)

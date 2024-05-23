@@ -12,24 +12,20 @@
 
 .section .bss
 .align 16
-
 stack_bottom:
-	.skip 1024 * 32  # 32 KB
+.skip 16384
+stack_top:
 
 stack_top:
 	.section .text
 	.global _start
 	.type _start, @function
 _start:
-	cli
 	mov $stack_top, %esp
-
+	push %ebx
 	call	kernel_main
-
-	hlt
-	jmp 1
 1:
-	jmp	1
+	jmp	1b
 
 
 .size _start, . - _start

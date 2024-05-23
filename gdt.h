@@ -21,7 +21,7 @@ struct gdt_ptr_t
     uint32_t base;
 } __attribute__((packed));
 
-static void gdt_set_gate(uint8_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity);
+void gdt_set_gate(uint8_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity);
 void gdt_install();
 
 void set_kernel_stack(uint32_t stack);

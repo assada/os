@@ -22,10 +22,9 @@ void kernel_main(void)
     irq_install();
 
     timer_install();
-
     keyboard_install();
 
-    terminal_printc("Welcome to &cDeadOS&7.\n");
+    syscall_init();
     for (int i = 0; i < 3; i++)
     {
         terminal_printc("&cDead &7");
@@ -34,9 +33,22 @@ void kernel_main(void)
         terminal_printc("\n");
         delay(100);
     }
-    syscall_init();
 
-    enter_user_space();
+    enter_user_space_v2();
+}
+
+void user_main(void)
+{
+    terminal_printc("Welcome to &cDeadOS&7.\n");
+
+    for (int i = 0; i < 3; i++)
+    {
+        terminal_printc("&cDead2 &7");
+        terminal_putchar('0' + (i / 10));
+        terminal_putchar('0' + (i % 10));
+        terminal_printc("\n");
+        delay(100);
+    }
 
     shell_init();
 }

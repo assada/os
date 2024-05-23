@@ -21,8 +21,6 @@ void *syscalls[NB_SYSCALL] = {
 
 void syscall_handler(Stack *registers)
 {
-    terminal_writestring("Syscall\n");
-
     int sys_index = registers->eax;
 
     if (sys_index >= NB_SYSCALL)

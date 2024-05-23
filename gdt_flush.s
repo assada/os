@@ -1,19 +1,17 @@
+.section .text
+.align 4
+
 .global gdt_flush
-
+.type gdt_flush, @function
 gdt_flush:
-    cli
+   lgdt gdt_ptr
+   jmp $0x08, $reload_cs
 
-    mov 4(%esp), %eax
-    lgdt (%eax)
-
-    mov $0x10, %ax
-    mov %ax, %ds
-    mov %ax, %es
-    mov %ax, %fs
-    mov %ax, %gs
-    mov %ax, %ss
-
-    jmp $0x08, $.flush
-
-.flush:
-    ret
+   reload_cs:
+      movw $0x10, %ax
+      movw %ax, %ds
+      movw %ax, %es
+      movw %ax, %fs
+      movw %ax, %gs
+      movw %ax, %ss
+      ret

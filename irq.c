@@ -4,6 +4,7 @@
 #include "io.h"
 #include "sys.h"
 #include "idt.h"
+#include "tty.h"
 
 extern void irq0(void);
 extern void irq1(void);
@@ -42,24 +43,16 @@ void irq_call_handler(Stack *registers)
         handler(registers);
 }
 
-static void irq_remap(void)
+static void irq_remap(void) // PIC REMAP
 {
     outb(PIC1_CMD, ICW1_INIT | ICW1_ICW4);
-    io_wait();
     outb(PIC2_CMD, ICW1_INIT | ICW1_ICW4);
-    io_wait();
     outb(PIC1_DATA, PIC1_OFFSET);
-    io_wait();
     outb(PIC2_DATA, PIC2_OFFSET);
-    io_wait();
     outb(PIC1_DATA, 0x04);
-    io_wait();
     outb(PIC2_DATA, 0x02);
-    io_wait();
     outb(PIC1_DATA, ICW4_8086);
-    io_wait();
     outb(PIC2_DATA, ICW4_8086);
-    io_wait();
 }
 
 void irq_install(void)

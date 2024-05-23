@@ -25,8 +25,8 @@ void isr_install(void);
 
 #define NB_IRQ_ROUTINES 16
 
-#define PIC1 0x20 /* master PIC */
-#define PIC2 0xA0 /* slave PIC */
+#define PIC1 0x20
+#define PIC2 0xA0
 #define PIC1_CMD PIC1
 #define PIC1_DATA (PIC1 + 1)
 #define PIC2_CMD PIC2
