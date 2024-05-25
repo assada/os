@@ -34,4 +34,5 @@ DeadOS is a minimalist operating system designed for x86 architecture, created s
 
 ## Screenshot:
 
-![image](https://github.com/assada/os/assets/1472664/9b67c053-36e1-4816-ad7f-093b89b03fce)
+![image](https://github.com/assada/os/assets/1472664/b4e17d66-cb85-4652-9217-11608ad0753d)
+
