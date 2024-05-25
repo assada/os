@@ -9,7 +9,7 @@ GRUB_MKRESCUE = grub-mkrescue
 KERNEL = deados.bin
 ISO = deados.iso
 
-SOURCES_C = kernel.c tty.c idt.c timer.c io.c vga.c gdt.c sys.c irq.c isr.c keyboard.c shell.c string.c user_space.c syscall.c
+SOURCES_C = kernel.c tty.c idt.c timer.c io.c vga.c gdt.c sys.c irq.c isr.c keyboard.c shell.c string.c user_space.c syscall.c rtc.c
 SOURCES_ASM = boot.s idt_load.s gdt_flush.s tss_flush.s irq_flush.s isr_flush.s
 OBJECTS = $(SOURCES_ASM:.s=.o) $(SOURCES_C:.c=.o)
 

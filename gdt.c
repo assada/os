@@ -35,7 +35,7 @@ static void tss_install(uint8_t num, uint16_t kernel_ss, uint16_t kernel_esp)
     memset(&tss, 0, sizeof(Tss_entry));
 
     tss.ss0 = kernel_ss;
-    tss.esp0 = kernel_esp;
+    tss.esp0 = kernel_esp + 0x1000; // SHIT
 
     tss.cs = 0x1B;
     tss.ss = 0x23;
@@ -48,10 +48,10 @@ static void tss_install(uint8_t num, uint16_t kernel_ss, uint16_t kernel_esp)
 void gdt_install()
 {
     gdt_set_gate(0, 0x0, 0x0, 0x0, 0x0);          // Null segment
-    gdt_set_gate(1, 0x0, 0xFFFFFFFF, 0x9A, 0xCF); // Kernel code segment
-    gdt_set_gate(2, 0x0, 0xFFFFFFFF, 0x92, 0xCF); // Data segment
-    gdt_set_gate(3, 0x0, 0xFFFFFFFF, 0xFA, 0xCF); // User code segment
-    gdt_set_gate(4, 0x0, 0xFFFFFFFF, 0xF2, 0xCF); // User data segment
+    gdt_set_gate(1, 0x0, 0xFFFFFFFF, 0x9A, 0xCF); // 0x08 Kernel code segment
+    gdt_set_gate(2, 0x0, 0xFFFFFFFF, 0x92, 0xCF); // 0x10 Kernel Data segment
+    gdt_set_gate(3, 0x0, 0xFFFFFFFF, 0xFA, 0xCF); // 0x18 User code segment
+    gdt_set_gate(4, 0x0, 0xFFFFFFFF, 0xF2, 0xCF); // 0x20 User data segment
 
     tss_install(5, 0x10, stack_top);
 

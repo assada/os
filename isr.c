@@ -55,7 +55,9 @@ void isr_call_handler(Stack *registers)
     void (*handler)(Stack *registers);
     handler = isr_routines[registers->id];
     if (handler)
+    {
         handler(registers);
+    }
 }
 
 void isr_install(void)

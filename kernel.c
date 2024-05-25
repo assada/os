@@ -12,9 +12,11 @@
 #include "shell.h"
 #include "user_space.h"
 #include "syscall.h"
+#include "rtc.h"
 
 void kernel_main(void)
 {
+    terminal_initialize();
     gdt_install();
 
     idt_install();
@@ -24,17 +26,18 @@ void kernel_main(void)
     timer_install();
     keyboard_install();
 
+    rtc_init();
+
     syscall_init();
     enter_user_space();
 }
 
 void main(void)
 {
-    terminal_initialize();
     for (int i = 1; i < 4; i++)
     {
         terminal_printf("&cTest &7%d\n", i);
-        delay(500);
+        delay(200);
     }
     terminal_clear();
 

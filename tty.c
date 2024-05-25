@@ -129,6 +129,21 @@ void terminal_print(const char *data)
     terminal_write(data, strlen(data));
 }
 
+static void print_number(int value, int base, int padding)
+{
+    char buffer[32];
+    itoa(value, buffer, base);
+    int len = strlen(buffer);
+
+    while (padding > len)
+    {
+        terminal_putchar('0');
+        padding--;
+    }
+
+    terminal_print(buffer);
+}
+
 void terminal_printf(const char *format, ...)
 {
     va_list args;
@@ -137,24 +152,29 @@ void terminal_printf(const char *format, ...)
     const char *p = format;
     while (*p)
     {
-        if (*p == '%' && (*(p + 1) == 's' || *(p + 1) == 'd' || *(p + 1) == 'x'))
+        if (*p == '%' && (*(p + 1) == 's' || *(p + 1) == 'd' || *(p + 1) == 'x' || *(p + 1) == '0'))
         {
             p++;
+            int padding = 0;
+
+            if (*p == '0')
+            {
+                p++;
+                padding = *p - '0';
+                p++;
+            }
+
             if (*p == 's')
             {
                 terminal_print(va_arg(args, const char *));
             }
             else if (*p == 'd')
             {
-                char buffer[12];
-                itoa(va_arg(args, int), buffer, 10);
-                terminal_print(buffer);
+                print_number(va_arg(args, int), 10, padding);
             }
             else if (*p == 'x')
             {
-                char buffer[12];
-                itoa(va_arg(args, unsigned int), buffer, 16);
-                terminal_print(buffer);
+                print_number(va_arg(args, unsigned int), 16, padding);
             }
         }
         else if (*p == '&' && ((*(p + 1) >= '0' && *(p + 1) <= '9') || (*(p + 1) >= 'a' && *(p + 1) <= 'f')))

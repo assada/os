@@ -21,6 +21,19 @@ void *memset(void *ptr, int value, size_t size)
     return ptr;
 }
 
+void memcpy(void *vd, const void *vs, unsigned length)
+{
+    char *d = vd;
+    const char *s = vs;
+    while (length)
+    {
+        *d = *s;
+        d++;
+        s++;
+        length--;
+    }
+}
+
 int strcmp(const char *str1, const char *str2)
 {
     while (*str1 && (*str1 == *str2))

@@ -3,6 +3,7 @@
 #include "shell.h"
 #include "tty.h"
 #include "string.h"
+#include "rtc.h"
 
 void shell_init(void)
 {
@@ -53,6 +54,7 @@ void shell_help_command(void)
     terminal_printf("exit - Exit the shell.\n");
     terminal_printf("echo - Print out the message. &eWITH colors!&7\n");
     terminal_printf("clear - Clear the terminal.\n");
+    terminal_printf("time - Print out the current time. (UTC)\n");
 }
 
 void shell_exit_command(void)
@@ -61,6 +63,14 @@ void shell_exit_command(void)
     terminal_printf("Goodbye!\n");
     while (1)
         ;
+}
+
+void shell_time_command(void)
+{
+    struct Rtc_time current_time = get_rtc_time();
+    terminal_printf("Current time: %02d:%02d:%02d %02d.%02d.%d\n",
+                    current_time.hour, current_time.min, current_time.sec,
+                    current_time.mday, current_time.mon, current_time.year);
 }
 
 void shell_echo_command(char *input)
@@ -101,6 +111,10 @@ void shell_parse_input(char *input)
     else if (strcmp(command, "clear") == 0)
     {
         terminal_clear();
+    }
+    else if (strcmp(command, "time") == 0)
+    {
+        shell_time_command();
     }
     else
     {

@@ -6,11 +6,13 @@
 #include "syscall.h"
 #include "tty.h"
 #include "timer.h"
+#include "rtc.h"
 
-#define NB_SYSCALL 2
+#define NB_SYSCALL 3
 
 void *syscalls[NB_SYSCALL] = {
     keyboard_getchar,
+    get_rtc_time,
 
     sys_halt};
 
