@@ -25,38 +25,44 @@ static void gdt_set_gate(uint8_t num, uint32_t base, uint32_t limit, uint8_t acc
     gdt[num].access = access;
 }
 
-static void tss_install(uint8_t num, uint16_t kernel_ss, uint16_t kernel_esp)
+void tss_install(uint8_t num, uint16_t kernel_ss, uint16_t kernel_esp)
 {
     uint32_t base = (uint32_t)&tss;
-    uint32_t limit = base + sizeof(Tss_entry);
-
-    gdt_set_gate(num, base, limit, 0xE9, 0x0);
+    uint32_t limit = sizeof(Tss_entry);
 
     memset(&tss, 0, sizeof(Tss_entry));
 
     tss.ss0 = kernel_ss;
-    tss.esp0 = kernel_esp + 0x1000; // SHIT
-
-    tss.cs = 0x1B;
+    tss.esp0 = kernel_esp;
+    
+    tss.cs = 0x1b;
     tss.ss = 0x23;
-    tss.es = 0x23;
     tss.ds = 0x23;
+    tss.es = 0x23;
     tss.fs = 0x23;
     tss.gs = 0x23;
+    
+    tss.iopb_off = sizeof(Tss_entry);
+
+    gdt_set_gate(num, base, limit, I86_GDT_DESC_ACCESS | I86_GDT_DESC_EXEC_CODE | I86_GDT_DESC_DPL | I86_GDT_DESC_MEMORY, 0x00);
 }
 
 void gdt_install()
 {
-    gdt_set_gate(0, 0x0, 0x0, 0x0, 0x0);          // Null segment
-    gdt_set_gate(1, 0x0, 0xFFFFFFFF, 0x9A, 0xCF); // 0x08 Kernel code segment
-    gdt_set_gate(2, 0x0, 0xFFFFFFFF, 0x92, 0xCF); // 0x10 Kernel Data segment
-    gdt_set_gate(3, 0x0, 0xFFFFFFFF, 0xFA, 0xCF); // 0x18 User code segment
-    gdt_set_gate(4, 0x0, 0xFFFFFFFF, 0xF2, 0xCF); // 0x20 User data segment
-
-    tss_install(5, 0x10, stack_top);
-
     gdtp.limit = (sizeof(Gdt_entry) * GDT_ENTRY) - 1;
     gdtp.base = (uint32_t)&gdt;
+
+    gdt_set_gate(0, 0, 0, 0, 0);
+
+    gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF);
+
+    gdt_set_gate(2, 0, 0xFFFFFFFF, 0x92, 0xCF);
+
+    gdt_set_gate(3, 0, 0xFFFFFFFF, 0xFA, 0xCF);
+
+    gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF);
+
+    tss_install(5, 0x10, (uint32_t)&stack_top);
 
     gdt_flush((uint32_t)&gdtp);
     tss_flush();

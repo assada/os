@@ -149,7 +149,13 @@ void fault_handler(Stack *registers)
         terminal_printf("Exception. System Halted!\n");
         terminal_printf("Exception: ");
         terminal_printf(exception_messages[registers->id]);
-
+        terminal_printf("\n");
+        terminal_printf("Error code: %d\n", registers->err_code);
+        terminal_printf("EIP: %x\n", registers->eip);
+        terminal_printf("CS: %x\n", registers->cs);
+        terminal_printf("EFLAGS: %x\n", registers->eflags);
+        terminal_printf("ESP: %x\n", registers->esp);
+        terminal_printf("SS: %x\n", registers->ss);
         isr_call_handler(registers);
 
         for (;;)

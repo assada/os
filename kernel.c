@@ -16,6 +16,7 @@
 
 void kernel_main(void)
 {
+    terminal_printf("Kernel start\n");
     terminal_initialize();
     gdt_install();
 
@@ -28,22 +29,42 @@ void kernel_main(void)
 
     rtc_init();
 
+    terminal_printf("Kernel initialized\n");
+    
     syscall_init();
+    terminal_printf("Syscall initialized\n");
+    
+    sys_enable_interrupts();
+    terminal_printf("Interrupts enabled\n");
+
     enter_user_space();
 }
 
+enum SYSCALLS {
+    SYS_GETCHAR = 0,
+    SYS_GET_TIME,
+    SYS_HALT,
+    SYS_PRINTF,
+    SYS_DELAY,
+    SYS_CLEAR,
+    SYS_SHELL_INIT
+};
+
 void main(void)
-{
+{ //TODO: Rework user space calls
+    int ret;
     for (int i = 1; i < 4; i++)
     {
-        terminal_printf("&cTest &7%d\n", i);
-        delay(200);
+        asm volatile("int $0x80" : "=a"(ret) : "a"(SYS_PRINTF), "b"("&cTest &7%d\n"), "c"(i));
+        
+        asm volatile("int $0x80" : "=a"(ret) : "a"(SYS_DELAY), "b"(1000));
     }
-    terminal_clear();
 
-    terminal_printf("Welcome to &cDeadOS&7.\n");
-    terminal_printf("You are now in user space.\n");
-    terminal_printf("Type 'help' for a list of available commands.\n");
+    asm volatile("int $0x80" : "=a"(ret) : "a"(SYS_CLEAR));
 
-    shell_init();
+    asm volatile("int $0x80" : "=a"(ret) : "a"(SYS_PRINTF), "b"("Welcome to &cDeadOS&7.\n"));
+    asm volatile("int $0x80" : "=a"(ret) : "a"(SYS_PRINTF), "b"("You are now in user space.\n"));
+    asm volatile("int $0x80" : "=a"(ret) : "a"(SYS_PRINTF), "b"("Type 'help' for a list of available commands.\n"));
+
+    asm volatile("int $0x80" : "=a"(ret) : "a"(SYS_SHELL_INIT));
 }
