@@ -16,7 +16,7 @@ OBJECTS = $(SOURCES_ASM:.s=.o) $(SOURCES_C:.c=.o)
 ISO_DIR = isodir
 GRUB_DIR = $(ISO_DIR)/boot/grub
 
-.PHONY: all clean iso
+.PHONY: all clean iso docker-build docker-make
 
 all: $(ISO)
 
@@ -43,3 +43,9 @@ check-multiboot: $(KERNEL)
 clean:
 	rm -f $(OBJECTS) $(KERNEL) $(ISO)
 	rm -rf $(ISO_DIR)
+
+docker-build:
+  docker build --progress=plain -t deados_builder .
+
+docker-make:
+  docker run -it -v $(shell pwd):/var/lib/deados deados_builder bash -c "cd /var/lib/deados && make"
