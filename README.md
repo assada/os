@@ -1,5 +1,7 @@
 # Simple OS implementation
 
+[![Build ISO](https://github.com/assada/os/actions/workflows/build-dead-iso.yml/badge.svg)](https://github.com/assada/os/actions/workflows/build-dead-iso.yml)
+
 DeadOS is a minimalist operating system designed for educational purposes. The code is organised so that architecture specific files live under `arch/<arch>` directories. The default architecture remains `x86`.
 
 ## Requirements
@@ -11,7 +13,7 @@ DeadOS is a minimalist operating system designed for educational purposes. The c
 ## How to run
 
 - `make`
-- `qemu-system-x86_64 -monitor stdio -cdrom deados.iso`
+- `qemu-system-x86_64 -cdrom deados.iso -boot d -m 256 -serial stdio`
 
 ## Features
 
