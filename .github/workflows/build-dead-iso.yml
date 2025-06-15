@@ -29,8 +29,35 @@ jobs:
         run: |
           docker run --rm -v ${{ github.workspace }}:/var/lib/deados deados_builder bash -c "cd /var/lib/deados && make"
 
+      - name: Rename ISO for artifact
+        run: mv deados.iso dead.iso
+
       - name: Upload ISO artifact
         uses: actions/upload-artifact@v4
         with:
-          name: deados.iso
-          path: deados.iso
+          name: dead-iso
+          path: dead.iso
+
+  release:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download ISO artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dead-iso
+          path: .
+
+      - name: Set release tag
+        id: release_vars
+        run: echo "tag=$(date +%Y%m%d)-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.release_vars.outputs.tag }}
+          name: DeadOS ${{ steps.release_vars.outputs.tag }}
+          files: dead.iso
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
