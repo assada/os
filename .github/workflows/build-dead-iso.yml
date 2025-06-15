@@ -1,0 +1,29 @@
+name: Build ISO
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build cross-compiler container
+        run: make docker-build
+
+      - name: Build ISO inside container
+        run: make docker-make
+
+      - name: Rename ISO for artifact
+        run: mv deados.iso dead.iso
+
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dead.iso
+          path: dead.iso
