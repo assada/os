@@ -17,13 +17,10 @@ jobs:
         run: make docker-build
 
       - name: Build ISO inside container
-        run: make docker-make
-
-      - name: Rename ISO for artifact
-        run: mv deados.iso dead.iso
+        run: docker run --rm -v ${{ github.workspace }}:/var/lib/deados deados_builder bash -c "cd /var/lib/deados && make"
 
       - name: Upload ISO artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dead.iso
-          path: dead.iso
+          name: deados.iso
+          path: deados.iso
