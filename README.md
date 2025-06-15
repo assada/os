@@ -26,13 +26,13 @@ DeadOS is a minimalist operating system designed for educational purposes. The c
 - [x] Timers
 - [x] Interrupts
 - [x] Kernel Extensions handling
-- [ ] Paging
-- [] Memory Management
-- [] File System
+- [x] Paging
+- [ ] Memory Management
+- [ ] File System
 - [x] User Space
 - [x] Syscalls
 - [ ] Multitasking
-- [] stdlib
+- [ ] stdlib
 
 ## Screenshot:
 

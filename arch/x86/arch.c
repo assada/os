@@ -8,11 +8,13 @@
 #include "rtc.h"
 #include "syscall.h"
 #include "user_space.h"
+#include "paging.h"
 
 void arch_init(void)
 {
     gdt_install();
     idt_install();
+    paging_init();
     isr_install();
     irq_install();
     timer_install();
