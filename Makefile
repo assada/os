@@ -49,7 +49,9 @@ clean:
 	rm -f $(OBJECTS) $(KERNEL) $(ISO)
 	rm -rf $(ISO_DIR)
 
-# Docker helpers remain unchanged
+run:
+	qemu-system-i386 -cdrom deados.iso -boot d -m 256 -serial stdio
+
 docker-build:
 	docker build --progress=plain -t deados_builder .
 		
