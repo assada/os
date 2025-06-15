@@ -13,11 +13,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Build cross-compiler container
-        run: make docker-build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          tags: deados_builder:latest
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Build ISO inside container
-        run: docker run --rm -v ${{ github.workspace }}:/var/lib/deados deados_builder bash -c "cd /var/lib/deados && make"
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/var/lib/deados deados_builder bash -c "cd /var/lib/deados && make"
 
       - name: Upload ISO artifact
         uses: actions/upload-artifact@v4
