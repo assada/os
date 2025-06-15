@@ -1,6 +1,6 @@
 # Simple OS implementation
 
-DeadOS is a minimalist operating system designed for x86 architecture, created solely for educational purposes. It is an ideal platform for learning and understanding the fundamental concepts of operating system development. While it is not intended to evolve into a fully-fledged OS, DeadOS provides a straightforward and manageable codebase that makes it perfect for experimentation and study.
+DeadOS is a minimalist operating system designed for educational purposes. The code is organised so that architecture specific files live under `arch/<arch>` directories. The default architecture remains `x86`.
 
 ## Requirements
 

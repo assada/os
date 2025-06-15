@@ -1,0 +1,15 @@
+#ifndef SYSCALL_NUMBERS_H
+#define SYSCALL_NUMBERS_H
+
+enum SYSCALL_NUMBER {
+    SYS_GETCHAR = 0,
+    SYS_GET_TIME,
+    SYS_HALT,
+    SYS_PRINTF,
+    SYS_DELAY,
+    SYS_CLEAR,
+    SYS_SHELL_INIT,
+    SYS_COUNT
+};
+
+#endif /* SYSCALL_NUMBERS_H */

@@ -4,13 +4,13 @@
 #include "keyboard.h"
 #include "sys.h"
 #include "syscall.h"
+#include "syscall_numbers.h"
 #include "tty.h"
 #include "timer.h"
 #include "rtc.h"
 #include "shell.h"
-#define NB_SYSCALL 7
 
-void *syscalls[NB_SYSCALL] = {
+static void *syscalls[SYS_COUNT] = {
     keyboard_getchar,
     get_rtc_time,
     sys_halt,
@@ -18,14 +18,14 @@ void *syscalls[NB_SYSCALL] = {
     delay,
     terminal_clear,
     shell_init
-    };
+};
 
 void syscall_handler(Stack *registers)
 {
     if ((registers->cs & 0x3) != 0x3) return;
     
     int sys_index = registers->eax;
-    if (sys_index >= NB_SYSCALL) return;
+    if (sys_index >= SYS_COUNT) return;
 
     void *function = syscalls[sys_index];
 

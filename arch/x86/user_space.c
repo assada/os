@@ -1,3 +1,5 @@
+#include "user.h"
+
 void enter_user_space()
 {
     asm volatile("cli; \
@@ -17,6 +19,6 @@ void enter_user_space()
                   push $user_code_entry; \
                   iret; \
                   user_code_entry: \
-                  call main; \
+                  call user_main; \
                   ");
 }
